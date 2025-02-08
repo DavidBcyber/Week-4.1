@@ -11,89 +11,66 @@ namespace Week_4._1
     {
         public class CurrencyConverter
         {
+            // Exchange rates
             private static double usdToEurRate = 0.96;
             private static double usdToJpyRate = 152.20;
             private static double eurToJpyRate = 158.18;
 
-            public static double ConvertToUSD(double amount, string fromCurrency)
-            {
-                switch (fromCurrency.ToUpper())
-                {
-                    case "EUR":
-                        return amount / usdToEurRate;
-                    case "JPY":
-                        return amount / usdToJpyRate;
-                    case "USD":
-                        return amount;
-                    default:
-                        Console.WriteLine("Invalid currency.");
-                        return 0;
-                }
-            }
-
-            public static double ConvertToEUR(double amount, string fromCurrency)
-            {
-                switch (fromCurrency.ToUpper())
-                {
-                    case "USD":
-                        return amount * usdToEurRate;
-                    case "JPY":
-                        return ConvertToUSD(amount, "JPY") * usdToEurRate;
-                    case "EUR":
-                        return amount;
-                    default:
-                        Console.WriteLine("Invalid currency.");
-                        return 0;
-                }
-            }
-
-            public static double ConvertToJPY(double amount, string fromCurrency)
-            {
-                switch (fromCurrency.ToUpper())
-                {
-                    case "USD":
-                        return amount * usdToJpyRate;
-                    case "EUR":
-                        return amount * eurToJpyRate;
-                    case "JPY":
-                        return amount;
-                    default:
-                        Console.WriteLine("Invalid currency.");
-                        return 0;
-                }
-            }
-
             public static void Main(string[] args)
-            {
-                Console.WriteLine("Enter the amount to convert:");
-                double amount = double.Parse(Console.ReadLine());
+    {
+        // Get input from the user
+        Console.Write("Enter the amount to convert: ");
+        double amount = double.Parse(Console.ReadLine());
 
-                Console.WriteLine("Enter the currency to convert from (USD, EUR, JPY):");
-                string fromCurrency = Console.ReadLine();
+        Console.Write("Enter the source currency (USD, EUR, JPY): ");
+        string fromCurrency = Console.ReadLine().ToUpper();
 
-                Console.WriteLine("Enter the currency to convert to (USD, EUR, JPY):");
-                string toCurrency = Console.ReadLine();
+        Console.Write("Enter the target currency (USD, EUR, JPY): ");
+        string toCurrency = Console.ReadLine().ToUpper();
 
-                double convertedAmount = 0;
+        // Perform conversion
+        double convertedAmount = ConvertCurrency(amount, fromCurrency, toCurrency);
 
-                switch (toCurrency.ToUpper())
-                {
-                    case "USD":
-                        convertedAmount = ConvertToUSD(amount, fromCurrency);
-                        break;
-                    case "EUR":
-                        convertedAmount = ConvertToEUR(amount, fromCurrency);
-                        break;
-                    case "JPY":
-                        convertedAmount = ConvertToJPY(amount, fromCurrency);
-                        break;
-                    default:
-                        Console.WriteLine("Invalid currency.");
-                        return;
-                }
+        // Display the result
+        Console.WriteLine($"{amount} {fromCurrency} is equal to {convertedAmount} {toCurrency}");
+    }
 
-                Console.WriteLine($"{amount} {fromCurrency} is equal to {convertedAmount} {toCurrency}");
-            }
+    // Method to convert currency
+    public static double ConvertCurrency(double amount, string fromCurrency, string toCurrency)
+    {
+        double amountInUsd = 0;
+
+        // Convert to USD first, if necessary
+        switch (fromCurrency)
+        {
+            case "USD":
+                amountInUsd = amount;
+                break;
+            case "EUR":
+                amountInUsd = amount / UsdToEurRate;
+                break;
+            case "JPY":
+                amountInUsd = amount / UsdToJpyRate;
+                break;
+            default:
+                Console.WriteLine("Invalid source currency.");
+                return 0;
+        }
+
+        // Convert from USD to the target currency
+        switch (toCurrency)
+        {
+            case "USD":
+                return amountInUsd;
+            case "EUR":
+                return amountInUsd * UsdToEurRate;
+            case "JPY":
+                return amountInUsd * UsdToJpyRate;
+            default:
+                Console.WriteLine("Invalid target currency.");
+                return 0;
+        }
+    }
         }
     }
 }
